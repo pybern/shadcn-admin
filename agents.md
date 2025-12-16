@@ -160,3 +160,5 @@ This project supports two authentication systems:
 - **Client State**: Zustand for global state, React useState for local
 - **URL State**: `useSearchParams` from Next.js for table filters/pagination
 
+
+

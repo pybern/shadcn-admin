@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, useMemo } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { getCookie, setCookie, removeCookie } from '@/lib/cookies'
 
 type Theme = 'dark' | 'light' | 'system'
@@ -34,38 +34,57 @@ const initialState: ThemeProviderState = {
 
 const ThemeContext = createContext<ThemeProviderState>(initialState)
 
+// Helper to get resolved theme safely (works on both server and client)
+function getResolvedTheme(theme: Theme): ResolvedTheme {
+  if (theme === 'system') {
+    // Only access window on the client
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light'
+    }
+    // Default to light on server
+    return 'light'
+  }
+  return theme as ResolvedTheme
+}
+
 export function ThemeProvider({
   children,
   defaultTheme = DEFAULT_THEME,
   storageKey = THEME_COOKIE_NAME,
   ...props
 }: ThemeProviderProps) {
-  const [theme, _setTheme] = useState<Theme>(
-    () => (getCookie(storageKey) as Theme) || defaultTheme
-  )
+  const [theme, _setTheme] = useState<Theme>(defaultTheme)
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>('light')
 
-  // Optimized: Memoize the resolved theme calculation to prevent unnecessary re-computations
-  const resolvedTheme = useMemo((): ResolvedTheme => {
-    if (theme === 'system') {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
+  // Initialize theme from cookie on client side
+  useEffect(() => {
+    const savedTheme = getCookie(storageKey) as Theme | undefined
+    if (savedTheme) {
+      _setTheme(savedTheme)
     }
-    return theme as ResolvedTheme
+  }, [storageKey])
+
+  // Update resolved theme when theme changes
+  useEffect(() => {
+    setResolvedTheme(getResolvedTheme(theme))
   }, [theme])
 
+  // Apply theme to document and listen for system preference changes
   useEffect(() => {
     const root = window.document.documentElement
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
     const applyTheme = (currentResolvedTheme: ResolvedTheme) => {
-      root.classList.remove('light', 'dark') // Remove existing theme classes
-      root.classList.add(currentResolvedTheme) // Add the new theme class
+      root.classList.remove('light', 'dark')
+      root.classList.add(currentResolvedTheme)
     }
 
     const handleChange = () => {
       if (theme === 'system') {
         const systemTheme = mediaQuery.matches ? 'dark' : 'light'
+        setResolvedTheme(systemTheme)
         applyTheme(systemTheme)
       }
     }
@@ -102,7 +121,6 @@ export function ThemeProvider({
   )
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = () => {
   const context = useContext(ThemeContext)
 

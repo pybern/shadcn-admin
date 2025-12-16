@@ -1,8 +1,11 @@
-'use client'
-
+import { Suspense } from 'react'
 import { Tasks } from '@/features/tasks'
 
 export default function TasksPage() {
-  return <Tasks />
+  return (
+    <Suspense>
+      <Tasks />
+    </Suspense>
+  )
 }
 

@@ -1,3 +1,5 @@
+'use client'
+
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -24,12 +26,12 @@ import { Input } from '@/components/ui/input'
 
 const formSchema = z.object({
   file: z
-    .instanceof(FileList)
-    .refine((files) => files.length > 0, {
+    .custom<FileList>()
+    .refine((files) => files && files.length > 0, {
       message: 'Please upload a file',
     })
     .refine(
-      (files) => ['text/csv'].includes(files?.[0]?.type),
+      (files) => files && ['text/csv'].includes(files?.[0]?.type),
       'Please upload csv format.'
     ),
 })

@@ -17,7 +17,6 @@ export function NavigationProgress() {
   // Start loading on navigation - this is triggered by Next.js router events
   useEffect(() => {
     const handleStart = () => ref.current?.continuousStart()
-    const handleComplete = () => ref.current?.complete()
 
     // Listen for click events on links to start the progress bar
     const handleClick = (e: MouseEvent) => {

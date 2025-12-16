@@ -8,7 +8,7 @@ import { SidebarTrigger } from '@/components/ui/sidebar'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Main } from '@/components/layout/main'
 import { ThemeSwitch } from '@/components/theme-switch'
-import AuthenticatedLayout from '@/app/(authenticated)/layout'
+import { AuthenticatedLayout } from '@/components/layout/authenticated-layout'
 
 // Import your Publishable Key
 const PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY

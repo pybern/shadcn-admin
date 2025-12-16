@@ -1,8 +1,11 @@
-'use client'
-
+import { Suspense } from 'react'
 import { Apps } from '@/features/apps'
 
 export default function AppsPage() {
-  return <Apps />
+  return (
+    <Suspense>
+      <Apps />
+    </Suspense>
+  )
 }
 

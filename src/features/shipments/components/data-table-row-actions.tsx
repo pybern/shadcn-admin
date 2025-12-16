@@ -1,6 +1,7 @@
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { type Row } from '@tanstack/react-table'
-import { Trash2, SquarePen, Copy, CopyPlus } from 'lucide-react'
+import Link from 'next/link'
+import { Trash2, SquarePen, Copy, CopyPlus, ExternalLink } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import {
@@ -42,6 +43,12 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-[160px]'>
+        <DropdownMenuItem asChild>
+          <Link href={`/shipments/${shipment.ref_id}`}>
+            <ExternalLink className='mr-2 h-4 w-4' />
+            View Details
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => {
             setCurrentRow(shipment)

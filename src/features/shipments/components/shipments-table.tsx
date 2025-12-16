@@ -24,7 +24,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { DataTablePagination, DataTableToolbar } from '@/components/data-table'
-import { carriers, statuses } from '../data/data'
+import { statuses } from '../data/data'
 import { type Shipment } from '../data/schema'
 import { DataTableBulkActions } from './data-table-bulk-actions'
 import { shipmentsColumns as columns } from './shipments-columns'
@@ -52,8 +52,7 @@ export function ShipmentsTable({ data }: DataTableProps) {
     pagination: { defaultPage: 1, defaultPageSize: 10 },
     globalFilter: { enabled: true, key: 'filter' },
     columnFilters: [
-      { columnId: 'status', searchKey: 'status', type: 'array' },
-      { columnId: 'carrier', searchKey: 'carrier', type: 'array' },
+      { columnId: 'note_l1', searchKey: 'status', type: 'array' },
     ],
   })
 
@@ -73,15 +72,17 @@ export function ShipmentsTable({ data }: DataTableProps) {
     onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
     globalFilterFn: (row, _columnId, filterValue) => {
-      const id = String(row.getValue('id')).toLowerCase()
-      const trackingNumber = String(row.getValue('trackingNumber')).toLowerCase()
-      const destination = String(row.getValue('destination')).toLowerCase()
+      const refId = String(row.getValue('ref_id') || '').toLowerCase()
+      const email = String(row.original.email || '').toLowerCase()
+      const noteL1 = String(row.original.note_l1 || '').toLowerCase()
+      const noteL2 = String(row.original.note_l2 || '').toLowerCase()
       const searchValue = String(filterValue).toLowerCase()
 
       return (
-        id.includes(searchValue) ||
-        trackingNumber.includes(searchValue) ||
-        destination.includes(searchValue)
+        refId.includes(searchValue) ||
+        email.includes(searchValue) ||
+        noteL1.includes(searchValue) ||
+        noteL2.includes(searchValue)
       )
     },
     getCoreRowModel: getCoreRowModel(),
@@ -109,17 +110,12 @@ export function ShipmentsTable({ data }: DataTableProps) {
     >
       <DataTableToolbar
         table={table}
-        searchPlaceholder='Filter by ID, tracking, or destination...'
+        searchPlaceholder='Filter by ID, email, title, or notes...'
         filters={[
           {
-            columnId: 'status',
+            columnId: 'note_l1',
             title: 'Status',
             options: statuses,
-          },
-          {
-            columnId: 'carrier',
-            title: 'Carrier',
-            options: carriers,
           },
         ]}
       />
@@ -191,4 +187,3 @@ export function ShipmentsTable({ data }: DataTableProps) {
     </div>
   )
 }
-

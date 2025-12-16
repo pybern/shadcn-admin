@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Shipment } from '../data/schema'
 
-type ShipmentsDialogType = 'create' | 'update' | 'delete' | 'import'
+type ShipmentsDialogType = 'create' | 'update' | 'delete' | 'duplicate' | 'import'
 
 type ShipmentsContextType = {
   open: ShipmentsDialogType | null
@@ -35,4 +35,3 @@ export const useShipments = () => {
 
   return shipmentsContext
 }
-

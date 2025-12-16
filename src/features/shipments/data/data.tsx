@@ -4,35 +4,10 @@ import {
   PackageCheck,
   PackageX,
   Clock,
-  Plane,
-  Ship,
   CircleAlert,
   RotateCcw,
   Warehouse,
 } from 'lucide-react'
-
-export const carriers = [
-  {
-    value: 'fedex',
-    label: 'FedEx',
-  },
-  {
-    value: 'ups',
-    label: 'UPS',
-  },
-  {
-    value: 'dhl',
-    label: 'DHL',
-  },
-  {
-    value: 'usps',
-    label: 'USPS',
-  },
-  {
-    value: 'amazon',
-    label: 'Amazon Logistics',
-  },
-]
 
 export const statuses = [
   {
@@ -41,19 +16,19 @@ export const statuses = [
     icon: Clock,
   },
   {
-    label: 'Processing',
-    value: 'processing' as const,
+    label: 'Confirmed',
+    value: 'confirmed' as const,
     icon: Warehouse,
   },
   {
-    label: 'In Transit',
-    value: 'in transit' as const,
-    icon: Truck,
+    label: 'Picked Up',
+    value: 'picked_up' as const,
+    icon: Package,
   },
   {
-    label: 'Out for Delivery',
-    value: 'out for delivery' as const,
-    icon: Package,
+    label: 'In Transit',
+    value: 'in_transit' as const,
+    icon: Truck,
   },
   {
     label: 'Delivered',
@@ -61,37 +36,27 @@ export const statuses = [
     icon: PackageCheck,
   },
   {
-    label: 'Failed Delivery',
-    value: 'failed' as const,
+    label: 'Cancelled',
+    value: 'cancelled' as const,
     icon: PackageX,
   },
   {
-    label: 'Returned',
-    value: 'returned' as const,
+    label: 'Refunded',
+    value: 'refunded' as const,
     icon: RotateCcw,
   },
   {
-    label: 'Exception',
-    value: 'exception' as const,
+    label: 'Issue',
+    value: 'issue' as const,
     icon: CircleAlert,
   },
 ]
 
-export const shippingMethods = [
-  {
-    label: 'Ground',
-    value: 'ground' as const,
-    icon: Truck,
-  },
-  {
-    label: 'Express',
-    value: 'express' as const,
-    icon: Plane,
-  },
-  {
-    label: 'Freight',
-    value: 'freight' as const,
-    icon: Ship,
-  },
+export const vehicleTypes = [
+  { value: 'sedan', label: 'Sedan' },
+  { value: 'suv', label: 'SUV' },
+  { value: 'truck', label: 'Truck' },
+  { value: 'van', label: 'Van' },
+  { value: 'motorcycle', label: 'Motorcycle' },
+  { value: 'other', label: 'Other' },
 ]
-

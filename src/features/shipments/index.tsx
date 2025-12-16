@@ -1,5 +1,8 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+import { Loader2 } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
@@ -10,9 +13,37 @@ import { ShipmentsDialogs } from './components/shipments-dialogs'
 import { ShipmentsPrimaryButtons } from './components/shipments-primary-buttons'
 import { ShipmentsProvider } from './components/shipments-provider'
 import { ShipmentsTable } from './components/shipments-table'
-import { shipments } from './data/shipments'
+import { type Shipment } from './data/schema'
 
 export function Shipments() {
+  const [shipments, setShipments] = useState<Shipment[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    async function fetchShipments() {
+      try {
+        setLoading(true)
+        const { data, error } = await supabase
+          .from('dev_book')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(100)
+
+        if (error) throw error
+
+        setShipments(data || [])
+      } catch (err) {
+        console.error('Error fetching shipments:', err)
+        setError(err instanceof Error ? err.message : 'Failed to fetch shipments')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchShipments()
+  }, [])
+
   return (
     <ShipmentsProvider>
       <Header fixed>
@@ -34,11 +65,24 @@ export function Shipments() {
           </div>
           <ShipmentsPrimaryButtons />
         </div>
-        <ShipmentsTable data={shipments} />
+
+        {loading ? (
+          <div className='flex flex-1 items-center justify-center'>
+            <Loader2 className='size-8 animate-spin text-muted-foreground' />
+          </div>
+        ) : error ? (
+          <div className='flex flex-1 flex-col items-center justify-center gap-2'>
+            <p className='text-destructive'>{error}</p>
+            <p className='text-sm text-muted-foreground'>
+              Please check your Supabase configuration.
+            </p>
+          </div>
+        ) : (
+          <ShipmentsTable data={shipments} />
+        )}
       </Main>
 
       <ShipmentsDialogs />
     </ShipmentsProvider>
   )
 }
-

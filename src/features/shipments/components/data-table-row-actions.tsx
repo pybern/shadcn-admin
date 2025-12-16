@@ -1,6 +1,6 @@
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { type Row } from '@tanstack/react-table'
-import { Trash2, Eye, Copy } from 'lucide-react'
+import { Trash2, SquarePen, Copy, CopyPlus } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import {
@@ -25,9 +25,9 @@ export function DataTableRowActions<TData>({
 
   const { setOpen, setCurrentRow } = useShipments()
 
-  const handleCopyTracking = () => {
-    navigator.clipboard.writeText(shipment.trackingNumber)
-    toast.success('Tracking number copied to clipboard')
+  const handleCopyRefId = () => {
+    navigator.clipboard.writeText(shipment.ref_id)
+    toast.success('Reference ID copied to clipboard')
   }
 
   return (
@@ -48,12 +48,21 @@ export function DataTableRowActions<TData>({
             setOpen('update')
           }}
         >
-          <Eye className='mr-2 h-4 w-4' />
-          View Details
+          <SquarePen className='mr-2 h-4 w-4' />
+          Quick Edit
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleCopyTracking}>
+        <DropdownMenuItem onClick={handleCopyRefId}>
           <Copy className='mr-2 h-4 w-4' />
-          Copy Tracking
+          Copy Ref ID
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            setCurrentRow(shipment)
+            setOpen('duplicate')
+          }}
+        >
+          <CopyPlus className='mr-2 h-4 w-4' />
+          Duplicate
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -71,4 +80,3 @@ export function DataTableRowActions<TData>({
     </DropdownMenu>
   )
 }
-

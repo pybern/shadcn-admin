@@ -1,5 +1,6 @@
 'use client'
 
+import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/nextjs'
 import { getCookie } from '@/lib/cookies'
 import { cn } from '@/lib/utils'
 import { LayoutProvider } from '@/context/layout-provider'
@@ -14,24 +15,31 @@ export default function ClerkAuthenticatedLayout({
   children: React.ReactNode
 }) {
   const defaultOpen = getCookie('sidebar_state') !== 'false'
+  
   return (
-    <SearchProvider>
-      <LayoutProvider>
-        <SidebarProvider defaultOpen={defaultOpen}>
-          <SkipToMain />
-          <AppSidebar />
-          <SidebarInset
-            className={cn(
-              '@container/content',
-              'has-data-[layout=fixed]:h-svh',
-              'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]'
-            )}
-          >
-            {children}
-          </SidebarInset>
-        </SidebarProvider>
-      </LayoutProvider>
-    </SearchProvider>
+    <>
+      <SignedIn>
+        <SearchProvider>
+          <LayoutProvider>
+            <SidebarProvider defaultOpen={defaultOpen}>
+              <SkipToMain />
+              <AppSidebar />
+              <SidebarInset
+                className={cn(
+                  '@container/content',
+                  'has-data-[layout=fixed]:h-svh',
+                  'peer-data-[variant=inset]:has-data-[layout=fixed]:h-[calc(100svh-(var(--spacing)*4))]'
+                )}
+              >
+                {children}
+              </SidebarInset>
+            </SidebarProvider>
+          </LayoutProvider>
+        </SearchProvider>
+      </SignedIn>
+      <SignedOut>
+        <RedirectToSignIn />
+      </SignedOut>
+    </>
   )
 }
-
